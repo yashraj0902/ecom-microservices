@@ -1,6 +1,4 @@
-package com.app.ecom;
-
-import lombok.Data;
+package com.app.ecom.entity;
 
 public class User {
     private Long id;
