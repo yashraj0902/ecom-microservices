@@ -1,6 +1,7 @@
 package com.app.ecom.controller;
 import com.app.ecom.entity.User;
 import com.app.ecom.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,14 +9,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers()
@@ -44,6 +42,19 @@ public class UserController {
         if(updated) return ResponseEntity.ok("User updated successfully!");
         return ResponseEntity.notFound().build();
     }
+
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteUser(@PathVariable Long id)
+//    {
+//        boolean deleted = userService.deleteUser(id);
+//        if(!deleted)
+//        {
+//            return ResponseEntity.notFound().build();
+//        }
+//        return ResponseEntity.noContent().build();
+//
+//
+//    }
 
 
 }
