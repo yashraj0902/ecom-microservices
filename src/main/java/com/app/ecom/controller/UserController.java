@@ -1,4 +1,6 @@
 package com.app.ecom.controller;
+import com.app.ecom.dto.UserRequest;
+import com.app.ecom.dto.UserResponse;
 import com.app.ecom.model.User;
 import com.app.ecom.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,46 +18,32 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers()
+    public ResponseEntity<List<UserResponse>> getAllUsers()
     {
         return new ResponseEntity<>(userService.fetchAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
         return userService.fetchUser(id)
                 .map(user -> ResponseEntity.ok(user))
                 .orElseGet(() -> ResponseEntity.<User>notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody User user)
+    public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest)
     {
-       userService.addUser(user);
+       userService.addUser(userRequest);
        return ResponseEntity.ok("User added successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody User updatedUser)
+    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserRequest updatedUserRequest)
     {
-        boolean updated = userService.updateUser(id, updatedUser);
+        boolean updated = userService.updateUser(id, updatedUserRequest);
         if(updated) return ResponseEntity.ok("User updated successfully!");
         return ResponseEntity.notFound().build();
     }
-
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteUser(@PathVariable Long id)
-//    {
-//        boolean deleted = userService.deleteUser(id);
-//        if(!deleted)
-//        {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.noContent().build();
-//
-//
-//    }
-
 
 }
 

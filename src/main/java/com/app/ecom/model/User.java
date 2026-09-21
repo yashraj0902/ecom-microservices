@@ -1,7 +1,13 @@
 package com.app.ecom.model;
+
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity(name = "user_table")
 //@AllArgsConstructor
@@ -21,5 +27,13 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
+
+    @CreationTimestamp    //created only once when the record is inserted the first time
+    private LocalDateTime createdAt; // represents the time at which the record for a user was created
+
+    @UpdateTimestamp  // regenerated everytime when an instance or a record is updated
+    private LocalDateTime updatedAt;
+
+
 
 }
