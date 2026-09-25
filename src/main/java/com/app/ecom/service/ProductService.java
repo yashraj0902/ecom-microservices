@@ -1,12 +1,13 @@
 package com.app.ecom.service;
-
-
 import com.app.ecom.dto.ProductRequest;
 import com.app.ecom.dto.ProductResponse;
 import com.app.ecom.model.Product;
 import com.app.ecom.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class ProductService {
     public ProductResponse createProduct(ProductRequest productRequest)
     {
         Product product = new Product();
-        updateFromRequest(product, productRequest);
+        updateProductFromRequest(product, productRequest);
         Product savedProduct = productRepository.save(product);
         return mapToProductResponse(savedProduct);
     }
@@ -31,24 +32,53 @@ public class ProductService {
         response.setDescription(savedProduct.getDescription());
         response.setPrice(savedProduct.getPrice());
         response.setImageUrl(savedProduct.getImageUrl());
-        response.setIsActive(savedProduct.getIsActive());
+        response.setIsActive(savedProduct.getActive());
         response.setStockQuantity(savedProduct.getStockQuantity());
         return response;
     }
 
 
-    private void updateFromRequest(Product product, ProductRequest productRequest)
+    private void updateProductFromRequest(Product product, ProductRequest productRequest)
     {
-
         product.setName(productRequest.getName());
         product.setCategory(productRequest.getCategory());
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setImageUrl(productRequest.getImageUrl());
         product.setStockQuantity(productRequest.getStockQuantity());
-
-
     }
+
+    public Optional<ProductResponse> updateProduct(Long id, ProductRequest productRequest)
+    {
+        return productRepository.findById(id).map(existingProduct -> {
+            updateProductFromRequest(existingProduct, productRequest);
+            Product savedProduct = productRepository.save(existingProduct);
+            return mapToProductResponse(savedProduct);
+        });
+    }
+
+    public List<ProductResponse> getAllProducts()
+    {
+        return productRepository.findByActiveTrue().stream()
+                .map(this::mapToProductResponse)
+                .collect(Collectors.toList());
+    }
+
+    public boolean deleteProduct(Long id)
+    {
+        return  productRepository.findById(id).map(product -> {
+            product.setActive(false);
+            productRepository.save(product);
+            return true;
+        }).orElse(false);
+    }
+
+    public List<ProductResponse> searchProducts(String keyword)
+    {
+        return productRepository.searchProducts(String keyword).stream()
+                .map.
+    }
+
 
 
 }
