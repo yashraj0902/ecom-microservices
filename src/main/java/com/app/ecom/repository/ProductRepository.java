@@ -3,6 +3,7 @@ package com.app.ecom.repository;
 import com.app.ecom.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +16,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     //custom query annotation to define our own definition of a method if its not already present in Jpa repository or not built in
     //also known as JPQL - Jakarta persistence query language
-    @Query("SELECT p from Product WHERE p.active = true AND p.stockQuantity > 0 AND LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    List<Product> searchProducts();
+    @Query("SELECT p from Product p WHERE p.active = true AND p.stockQuantity > 0 AND LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Product> searchProducts(@Param("keyword") String keyword);
 }
