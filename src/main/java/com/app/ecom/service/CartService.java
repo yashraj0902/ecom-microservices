@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,7 @@ public class CartService {
         Optional<Product> productOpt = productRepository.findById(request.getProductId());
         if(productOpt.isEmpty()) return false;
         Product product = productOpt.get();
-        if(productOpt.getStockQuantity() < request.getQuantity()) return false;
+        if(product.getStockQuantity() < request.getQuantity()) return false;
 
         Optional<User> userOpt = userRepository.findById(Long.valueOf(userId));
 
@@ -51,5 +52,30 @@ public class CartService {
         }
         return true;
     }
+
+    public boolean deleteItemFromCart(String userId, Long productId)
+    {
+        Optional<Product> productOpt = productRepository.findById(productId);
+        if(productOpt.isEmpty()) return false;
+
+        Optional<User> userOpt = userRepository.findById(Long.valueOf(userId));
+        if(userOpt.isEmpty()) return false;
+
+        userOpt.flatMap(user ->
+                productOpt.map(product -> {
+                    cartItemRepository.deleteByUserAndProduct(user, product);
+                    return true;
+                })
+                );
+
+        return false;
+    }
+
+    public List<CartItem> getCart(String userId)
+    {
+        return userRepository.findById(Long.valueOf(userId)).map(cartItemRepository::findByUser).orElseGet(List::of);
+    }
+
+
 
 }
