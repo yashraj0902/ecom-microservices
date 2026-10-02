@@ -29,7 +29,7 @@ public class Order {
     private OrderStatus orderStatus = OrderStatus.PENDING;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<OrderItem> items = new ArrayList<OrderItem>();
+    private java.util.List<OrderItem> items = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
